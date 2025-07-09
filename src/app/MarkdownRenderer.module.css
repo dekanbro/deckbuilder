@@ -1,0 +1,147 @@
+.deckSlideContent {
+  /* font-family removed to inherit global Inter font */
+  background-color: var(--slide-bg, #fff);
+  background-image: var(--slide-bgimg, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-blend-mode: multiply;
+  color: var(--slide-color, #222);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+.centered {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+}
+
+.imgCenter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2rem 0;
+}
+
+.imgLeft {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 2rem 0;
+}
+
+.imgRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin: 2rem 0;
+}
+
+.deckSlideContent figure img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.deckSlideContent figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.95em;
+  color: #666;
+  text-align: center;
+}
+
+/* .customBg is used for inline style overrides */
+
+.deckSlideContent h1, .deckSlideContent h2, .deckSlideContent h3 {
+  font-weight: 700;
+}
+
+/* Large text size options */
+.deckSlideContent.size-large h1 {
+  font-size: 3.5rem;
+  line-height: 1.1;
+}
+
+.deckSlideContent.size-large h2 {
+  font-size: 2.8rem;
+  line-height: 1.2;
+}
+
+.deckSlideContent.size-large h3 {
+  font-size: 2.2rem;
+  line-height: 1.3;
+}
+
+.deckSlideContent.size-huge h1 {
+  font-size: 5rem;
+  line-height: 1;
+}
+
+.deckSlideContent.size-huge h2 {
+  font-size: 4rem;
+  line-height: 1.1;
+}
+
+.deckSlideContent.size-huge h3 {
+  font-size: 3rem;
+  line-height: 1.2;
+}
+
+.deckSlideContent.size-massive h1 {
+  font-size: 7rem;
+  line-height: 0.9;
+}
+
+.deckSlideContent.size-massive h2 {
+  font-size: 5.5rem;
+  line-height: 1;
+}
+
+.deckSlideContent.size-massive h3 {
+  font-size: 4rem;
+  line-height: 1.1;
+}
+
+.deckSlideContent code {
+  background: #f4f4f4;
+  color: #c7254e;
+  padding: 0.2em 0.4em;
+  border-radius: 0.3em;
+  font-size: 0.95em;
+}
+
+/* Table styles */
+.deckSlideContent table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.deckSlideContent th,
+.deckSlideContent td {
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.deckSlideContent th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+.deckSlideContent td img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+} 

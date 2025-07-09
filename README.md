@@ -1,36 +1,196 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DeckBuilder
+
+A modern, responsive presentation deck builder built with Next.js 15, React, and TypeScript. Create beautiful slide presentations using simple markdown syntax with advanced styling options.
+
+## Features
+
+- **Markdown-based slides**: Write presentations in simple markdown format
+- **Advanced styling options**: Custom backgrounds, fonts, colors, and layouts
+- **Large text sizes**: Support for dramatic large, huge, and massive heading sizes
+- **Responsive design**: Works on desktop, tablet, and mobile devices
+- **Navigation controls**: Keyboard and mouse navigation between slides
+- **URL state management**: Direct links to specific slides
+- **Print support**: Export presentations to PDF and infographics
+- **Custom fonts**: Support for Google Fonts integration
+- **Image positioning**: Flexible image placement and alignment options
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ 
+- pnpm (recommended) or npm
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd deckbuilder
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+pnpm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Start the development server:
+```bash
+pnpm dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## Learn More
+## Creating Your Own Presentation
 
-To learn more about Next.js, take a look at the following resources:
+### Using a Custom Markdown File
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. **Create your markdown file**: Place your presentation file in the `public/` directory
+2. **Update the constant**: Open `src/app/constants.ts` and modify the `DECK_URL` constant:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```typescript
+// Change this line in src/app/constants.ts
+export const DECK_URL = "/your-presentation.md";
+```
 
-## Deploy on Vercel
+3. **Restart the development server** to see your changes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Markdown Syntax
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Each slide is separated by `---` delimiters. Here's a basic example:
+
+```markdown
+---
+# Welcome to My Presentation
+
+This is the first slide of my presentation.
+
+- Point 1
+- Point 2
+- Point 3
+---
+# Second Slide
+
+This is the second slide with some **bold text** and *italic text*.
+
+```javascript
+console.log("Code blocks are supported!");
+```
+---
+```
+
+### Advanced Styling Options
+
+#### Slide Options
+
+You can add HTML comments at the top of each slide to customize its appearance:
+
+```markdown
+<!-- center -->
+# Centered Slide
+This content will be centered both vertically and horizontally.
+
+<!-- bg=#222 color=#fff -->
+# Dark Theme Slide
+This slide has a dark background with white text.
+
+<!-- font=Roboto -->
+# Custom Font Slide
+This slide uses the Roboto font from Google Fonts.
+
+<!-- bgimg=https://example.com/image.jpg -->
+# Background Image Slide
+This slide has a background image.
+
+<!-- size=huge center -->
+# Large Impact Title
+This slide uses huge text size for dramatic effect.
+
+<!-- size=massive center bg=#1a1a1a color=#fff -->
+# MASSIVE TITLE
+This slide combines massive text with dark background.
+```
+
+#### Available Options
+
+- `center` - Centers content vertically and horizontally
+- `bg=<color>` - Sets background color (hex, rgb, rgba, or named colors)
+- `color=<color>` - Sets text color
+- `font=<fontname>` - Uses a Google Font (e.g., Roboto, Lora, Pacifico)
+- `bgimg=<url>` - Sets a background image
+- `imgpos=<position>` - Controls image positioning (left, right, center)
+- `size=<size>` - Sets text size for headings (large, huge, massive)
+
+#### Inline Styling
+
+You can also use inline HTML for more precise control:
+
+```markdown
+<span style="font-size:2rem; color:#e63946;">Large Red Text</span>
+<span style="background:#f4a261; padding:10px;">Highlighted Text</span>
+```
+
+### Examples
+
+Check out `public/deck.md` for comprehensive examples of all available features, including:
+
+- Basic slide formatting
+- Custom backgrounds and colors
+- Font variations
+- Large text sizes (large, huge, massive)
+- Image positioning and captions
+- Multiple image layouts
+- Inline styling examples
+- Background image overlays
+
+## Customization
+
+### Styling
+
+The main styling is controlled by `src/app/MarkdownRenderer.module.css`. You can customize:
+
+- Font families and sizes
+- Background colors and images
+- Text colors and spacing
+- Code block styling
+- Image positioning and sizing
+
+### Adding New Features
+
+The project is built with a modular architecture:
+
+- `src/app/page.tsx` - Main presentation component
+- `src/app/MarkdownRenderer.tsx` - Markdown rendering logic
+- `src/app/MarkdownRenderer.module.css` - Styling definitions
+- `src/app/constants.ts` - Global constants and configuration
+- `src/app/print/page.tsx` - Print/export functionality
+
+## Deployment
+
+### Vercel (Recommended)
+
+The easiest way to deploy is using [Vercel](https://vercel.com):
+
+1. Push your code to GitHub
+2. Connect your repository to Vercel
+3. Deploy automatically
+
+### Other Platforms
+
+This is a standard Next.js application and can be deployed to any platform that supports Node.js:
+
+- Netlify
+- Railway
+- DigitalOcean App Platform
+- AWS Amplify
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## License
+
+This project is open source and available under the [MIT License](LICENSE).
