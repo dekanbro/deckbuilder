@@ -143,6 +143,57 @@ Check out `public/deck.md` for comprehensive examples of all available features,
 - Inline styling examples
 - Background image overlays
 
+## Loading Decks from URL (Base64 & GitHub)
+
+In addition to using a markdown file in the `public/` directory, you can load a deck directly from a URL parameter. This allows you to share decks instantly without uploading files or changing any code.
+
+### 1. Load from Base64-Encoded Markdown
+
+Encode your markdown file as base64 and use the following URL format:
+
+```
+http://localhost:3000/?deck=base64:PASTE_YOUR_BASE64_STRING_HERE
+```
+
+- The app will decode and render the markdown as a slide deck.
+- Useful for sharing decks without hosting them anywhere.
+- Make sure your base64 string is a single line (no spaces or line breaks).
+
+**Example:**
+```
+http://localhost:3000/?deck=base64:CiMgU2FtcGxlIERlY2sKLS0tCiMgU2xpZGUgMQotLS0KIyBTbGlkZSAy
+```
+
+### 2. Load from a Public GitHub Repository
+
+You can load a markdown file directly from a public GitHub repo using this format:
+
+```
+http://localhost:3000/?deck=github:username/repo/branch/path/to/file.md
+```
+
+- Do **not** include `/blob/` in the path (use the raw path).
+- Example for a file at `https://github.com/dekanbro/deckbuilder/blob/main/public/deck.md`:
+
+```
+http://localhost:3000/?deck=github:dekanbro/deckbuilder/main/public/deck.md
+```
+
+### 3. Printing & Sharing
+
+- These URL parameters work for both viewing and printing (the print/export buttons will preserve the deck source).
+- You can share the full URL with others and they will see the same deck.
+
+### 4. Notes & Limitations
+
+- Maximum file size: 1MB
+- Only markdown files are supported
+- GitHub API has rate limits for unauthenticated users (60 requests/hour)
+- Private GitHub repos are not supported
+- Base64 URLs can get very long for large decks
+
+---
+
 ## Customization
 
 ### Styling
