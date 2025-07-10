@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, Printer, Share2, AlertCircle, Loader2 } from "lu
 import MarkdownRenderer from "./MarkdownRenderer";
 import { DECK_URL } from "./constants";
 import { DeckLoader, DeckLoadResult } from "./deckLoader";
+import { parseDeckContent } from "./deckParser";
 
 // Helper function to get slide number from URL
 function getSlideFromURL(): number {
@@ -32,6 +33,8 @@ function updateURLWithSlide(slideIndex: number) {
   window.history.replaceState({}, '', url.toString());
 }
 
+
+
 // Helper function to load default deck
 async function loadDefaultDeck(): Promise<string> {
   const response = await fetch(DECK_URL);
@@ -57,6 +60,9 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [deckSource, setDeckSource] = useState<string>('default');
   const [shareUrl, setShareUrl] = useState<string>('');
+  const [globalSize, setGlobalSize] = useState<string | undefined>(undefined);
+  const [globalBody, setGlobalBody] = useState<string | undefined>(undefined);
+  const [globalTransition, setGlobalTransition] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     loadDeck();
@@ -87,17 +93,17 @@ export default function Home() {
         source = 'default';
       }
 
-      // Split slides by --- delimiter
-      const rawSlides = content
-        .split(/\n---+\n/g)
-        .map((s) => s.trim())
-        .filter(Boolean);
+      // Parse global options and split slides
+      const { globalSize: parsedGlobalSize, globalBody: parsedGlobalBody, globalTransition: parsedGlobalTransition, slides: rawSlides } = parseDeckContent(content);
 
       if (rawSlides.length === 0) {
         throw new Error('No slides found in deck content');
       }
 
       setSlides(rawSlides);
+      setGlobalSize(parsedGlobalSize);
+      setGlobalBody(parsedGlobalBody);
+      setGlobalTransition(parsedGlobalTransition);
       setDeckSource(source);
       
       // Set initial slide from URL parameter
@@ -193,7 +199,7 @@ export default function Home() {
       )}
 
       <div className="w-full max-w-[1280px] h-[720px] flex items-center justify-center bg-white rounded-lg shadow-lg p-8 mb-4 overflow-auto mx-auto" style={{ minWidth: 320 }}>
-        <MarkdownRenderer markdown={slides[current]} />
+        <MarkdownRenderer markdown={slides[current]} globalSize={globalSize} globalText={globalBody} globalTransition={globalTransition} />
       </div>
       
       <div className="flex items-center gap-4 mb-8">

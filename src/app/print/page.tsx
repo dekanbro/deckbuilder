@@ -4,6 +4,7 @@ import MarkdownRenderer from "../MarkdownRenderer";
 import styles from "./print.module.css";
 import { DECK_URL } from "../constants";
 import { DeckLoader, DeckLoadResult } from "../deckLoader";
+import { parseDeckContent } from "../deckParser";
 
 // Helper function to get mode from URL
 function getModeFromURL(): string {
@@ -19,6 +20,8 @@ function getDeckFromURL(): string | null {
   return urlParams.get('deck');
 }
 
+
+
 // Helper function to load default deck
 async function loadDefaultDeck(): Promise<string> {
   const response = await fetch(DECK_URL);
@@ -33,6 +36,8 @@ export default function PrintPage() {
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState('deck');
   const [error, setError] = useState<string | null>(null);
+  const [globalSize, setGlobalSize] = useState<string | undefined>(undefined);
+  const [globalBody, setGlobalBody] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const currentMode = getModeFromURL();
@@ -55,14 +60,15 @@ export default function PrintPage() {
       } else {
         content = await loadDefaultDeck();
       }
-      const rawSlides = content
-        .split(/\n---+\n/g)
-        .map((s) => s.trim())
-        .filter(Boolean);
+      // Parse global options and split slides
+      const { globalSize: parsedGlobalSize, globalBody: parsedGlobalBody, slides: rawSlides } = parseDeckContent(content);
+      
       if (rawSlides.length === 0) {
         throw new Error('No slides found in deck content');
       }
       setSlides(rawSlides);
+      setGlobalSize(parsedGlobalSize);
+      setGlobalBody(parsedGlobalBody);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load deck');
       setSlides([]);
@@ -115,7 +121,7 @@ export default function PrintPage() {
           {slides.map((slide, index) => (
             <div key={index} className={styles.infographicSlide}>
               <div className={styles.slideNumber}>Slide {index + 1}</div>
-              <MarkdownRenderer markdown={slide} />
+              <MarkdownRenderer markdown={slide} globalSize={globalSize} globalText={globalBody} />
             </div>
           ))}
         </div>
@@ -128,7 +134,7 @@ export default function PrintPage() {
     <div className={`${styles.printContainer} ${styles.deckMode}`}>
       {slides.map((slide, index) => (
         <div key={index} className={styles.printSlide}>
-          <MarkdownRenderer markdown={slide} />
+          <MarkdownRenderer markdown={slide} globalSize={globalSize} globalText={globalBody} />
           {index < slides.length - 1 && <div className={styles.pageBreak} />}
         </div>
       ))}

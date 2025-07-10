@@ -17,8 +17,8 @@ export class DeckLoader {
     let debug = '';
     try {
       debug += `Input deckParam: ${deckParam.slice(0, 100)}...\n`;
-      if (deckParam.startsWith('base64:')) {
-        const result = await this.loadFromBase64(deckParam.slice(7));
+      if (deckParam.startsWith('url:')) {
+        const result = await this.loadFromUrlEncoded(deckParam.slice(4));
         result.debug = debug + (result.debug || '');
         return result;
       } else if (deckParam.startsWith('github:')) {
@@ -27,7 +27,7 @@ export class DeckLoader {
         return {
           content: '',
           source: 'invalid',
-          error: 'Invalid deck parameter format. Use base64:... or github:user/repo/path',
+          error: 'Invalid deck parameter format. Use url:... or github:user/repo/path',
           debug,
         };
       }
@@ -42,50 +42,29 @@ export class DeckLoader {
   }
 
   /**
-   * Load deck from base64 encoded string
+   * Load deck from URL-encoded string
    */
-  private static async loadFromBase64(base64String: string): Promise<DeckLoadResult> {
-    let debug = '';
+  private static async loadFromUrlEncoded(encodedString: string): Promise<DeckLoadResult> {
     try {
-      debug += `Raw base64 input (first 100 chars): ${base64String.slice(0, 100)}...\n`;
-      // Remove whitespace and newlines
-      const cleaned = base64String.replace(/\s+/g, '');
-      debug += `Cleaned base64 (first 100 chars): ${cleaned.slice(0, 100)}...\n`;
-      // Validate base64 string
-      if (!/^[A-Za-z0-9+/]*={0,2}$/.test(cleaned)) {
-        debug += 'Base64 validation failed (regex mismatch).\n';
-        throw new Error('Invalid base64 string');
-      }
-      debug += 'Base64 validation passed.\n';
-      // Decode base64
-      let decoded = '';
-      try {
-        decoded = atob(cleaned);
-        debug += 'Base64 decoded successfully.\n';
-      } catch (e) {
-        debug += `atob() failed: ${(e instanceof Error ? e.message : e)}\n`;
-        throw new Error('Invalid base64 string (atob failed)');
-      }
+      // Decode URL-encoded string
+      const content = decodeURIComponent(encodedString);
+      
       // Check file size
-      if (decoded.length > this.MAX_FILE_SIZE) {
-        debug += `Decoded file too large: ${decoded.length} bytes.\n`;
+      if (content.length > this.MAX_FILE_SIZE) {
         throw new Error(`File too large. Maximum size is ${this.MAX_FILE_SIZE / 1024}KB`);
       }
-      debug += `Decoded file size: ${decoded.length} bytes.\n`;
-      // Basic markdown validation (check if it contains common markdown elements)
-      if (!this.isValidMarkdown(decoded)) {
-        debug += 'Markdown validation failed.\n';
+
+      // Basic markdown validation
+      if (!this.isValidMarkdown(content)) {
         throw new Error('Content does not appear to be valid markdown');
       }
-      debug += 'Markdown validation passed.\n';
+
       return {
-        content: decoded,
-        source: 'base64',
-        debug,
+        content,
+        source: 'url'
       };
     } catch (error) {
-      debug += `Error: ${error instanceof Error ? error.message : error}\n`;
-      throw new Error(`Base64 decode failed: ${error instanceof Error ? error.message : 'Unknown error'}\nDebug: ${debug}`);
+      throw new Error(`URL decode failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -209,19 +188,19 @@ export class DeckLoader {
   }
 
   /**
-   * Encode content to base64 for sharing
+   * Encode content to URL-safe string for sharing
    */
-  static encodeToBase64(content: string): string {
-    return btoa(content);
+  static encodeToUrl(content: string): string {
+    return encodeURIComponent(content);
   }
 
   /**
    * Get shareable URL for current deck
    */
   static getShareableUrl(content: string, currentSlide: number = 0): string {
-    const base64 = this.encodeToBase64(content);
+    const encoded = this.encodeToUrl(content);
     const url = new URL(window.location.origin + window.location.pathname);
-    url.searchParams.set('deck', `base64:${base64}`);
+    url.searchParams.set('deck', `url:${encoded}`);
     if (currentSlide > 0) {
       url.searchParams.set('slide', String(currentSlide + 1));
     }

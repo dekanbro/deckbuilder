@@ -7,14 +7,16 @@ import { Components } from "react-markdown";
 
 /**
  * Slide-level options (set via HTML comment at top of slide):
- * <!-- center bg=#222 color=#fff font=Roboto imgpos=left size=huge -->
+ * <!-- center bg=#222 color=#fff font=Roboto imgpos=left size=huge body=large transition=fade -->
  * Supported options:
  *   center: centers content
  *   bg: background color (CSS value)
  *   color: text color (CSS value)
  *   font: Google font name (e.g. font=Roboto)
  *   imgpos: image alignment (center, left, right)
- *   size: text size (large, huge, massive)
+ *   size: heading size (large, huge, massive)
+ *   body: body text size (small, medium, large)
+ *   transition: transition type (fade, slide, zoom, none)
  */
 function parseSlideOptions(markdown: string) {
   const match = markdown.match(/^<!--\s*([^>]*)-->/);
@@ -33,13 +35,28 @@ function parseSlideOptions(markdown: string) {
 
 interface MarkdownRendererProps {
   markdown: string;
+  globalSize?: string; // Legacy prop name for global headings setting
+  globalText?: string; // Legacy prop name for global body setting
+  globalTransition?: string; // Global transition setting
 }
 
-const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ markdown }) => {
+const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ markdown, globalSize, globalText, globalTransition }) => {
   const { options, content } = parseSlideOptions(markdown);
   const classNames = [styles.deckSlideContent];
   if (options.center) classNames.push(styles.centered);
-  if (options.size) classNames.push(styles[`size-${options.size}`]);
+  
+  // Apply slide-level size or fall back to global size
+  const slideSize = options.size || globalSize;
+  if (slideSize) classNames.push(styles[`size-${slideSize}`]);
+  
+  // Apply slide-level body size or fall back to global body size
+  const slideBody = options.body || globalText;
+  if (slideBody) classNames.push(styles[`text-${slideBody}`]);
+  
+  // Apply slide-level transition or fall back to global transition
+  const slideTransition = options.transition || globalTransition;
+  if (slideTransition) classNames.push(styles[`transition-${slideTransition}`]);
+  
   const style: React.CSSProperties & { [key: string]: string | undefined } = {};
   if (options.bg) style["--slide-bg"] = options.bg as string;
   if (options.color) style["--slide-color"] = options.color as string;

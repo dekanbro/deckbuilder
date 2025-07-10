@@ -1,3 +1,4 @@
+<!-- global size=large body=medium transition=fade -->
 <!-- size=massive center bg=#1a1a1a color=#fff -->
 # Deck Builder
 Next.js Project Bootstrapped
@@ -18,12 +19,15 @@ pnpm dev
 bun dev
 ```
 ---
+<!-- transition=slide -->
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 ---
+<!-- transition=zoom -->
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 ---
+<!-- transition=none -->
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
@@ -197,12 +201,21 @@ You can display multiple images in a single slide using a table layout.
 ```
 | Image 1 | Image 2 | Image 3 |
 |---------|---------|---------|
-| ![Mountain](url1 "Mountain") | ![Forest](url2 "Forest") | ![Ocean](url3 "Ocean") |
 ```
-
 ---
-<!-- bg=rgba(0,0,0,0.5) bgimg=https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80 color=#fff center -->
-# Background Image Demo
+<!-- transition=slide center -->
+# Transition Examples
 
-This slide uses a background image with a semi-transparent black overlay and white text. You can combine `bgimg` and `bg` for stylish overlays!
---- 
+This slide demonstrates different transition types:
+
+- **fade**: Smooth opacity transition (default)
+- **slide**: Slide in from right with opacity
+- **zoom**: Scale up with opacity
+- **none**: No animation
+
+## Global vs Slide-level
+
+- **Global**: Set in deck header: `<!-- global transition=fade -->`
+- **Slide-level**: Override per slide: `<!-- transition=slide -->`
+
+Both support the same options: `fade`, `slide`, `zoom`, `none`
