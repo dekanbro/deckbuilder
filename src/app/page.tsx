@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { ArrowLeft, ArrowRight, Printer, Share2, AlertCircle, Loader2, Wand2, Download } from "lucide-react";
+import { ArrowLeft, ArrowRight, Printer, Share2, AlertCircle, Loader2, Wand2, Download, Copy } from "lucide-react";
 import MarkdownRenderer from "./MarkdownRenderer";
 import { DECK_URL } from "./constants";
 import { DeckLoader, DeckLoadResult } from "./deckLoader";
@@ -61,6 +61,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [deckSource, setDeckSource] = useState<string>('default');
   const [shareUrl, setShareUrl] = useState<string>('');
+  const [rawMarkdown, setRawMarkdown] = useState<string>('');
   const [globalSize, setGlobalSize] = useState<string | undefined>(undefined);
   const [globalBody, setGlobalBody] = useState<string | undefined>(undefined);
   const [globalTransition, setGlobalTransition] = useState<string | undefined>(undefined);
@@ -102,6 +103,7 @@ export default function Home() {
       }
 
       setSlides(rawSlides);
+      setRawMarkdown(content); // Store the raw markdown content
       setGlobalSize(parsedGlobalSize);
       setGlobalBody(parsedGlobalBody);
       setGlobalTransition(parsedGlobalTransition);
@@ -148,6 +150,15 @@ export default function Home() {
       // You could add a toast notification here
     } catch (err) {
       console.error('Failed to copy URL:', err);
+    }
+  };
+
+  const copyMarkdown = async () => {
+    try {
+      await navigator.clipboard.writeText(rawMarkdown);
+      // You could add a toast notification here
+    } catch (err) {
+      console.error('Failed to copy markdown:', err);
     }
   };
 
@@ -243,6 +254,12 @@ export default function Home() {
           className="flex items-center gap-2 px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
         >
           <Printer size={18} /> Print Deck (PDF)
+        </button>
+        <button 
+          onClick={copyMarkdown}
+          className="flex items-center gap-2 px-4 py-2 rounded bg-orange-600 text-white hover:bg-orange-700"
+        >
+          <Copy size={18} /> Copy Raw Markdown
         </button>
         {/* note implimented fully */}
         {/* <button 
