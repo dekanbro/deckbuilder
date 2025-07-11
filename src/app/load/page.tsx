@@ -115,7 +115,7 @@ export default function LoadPage() {
       }
 
       return { success: false, error: 'Invalid GitHub URL format. Please use a direct link to a markdown file (github.com/user/repo/blob/branch/file.md)' };
-    } catch (error) {
+    } catch {
       return { success: false, error: 'Failed to parse GitHub URL' };
     }
   };
@@ -144,7 +144,7 @@ export default function LoadPage() {
       }
 
       return { success: false, error: 'Invalid HackMD URL format. Please use a HackMD note URL (hackmd.io/@user/note or hackmd.io/note-id)' };
-    } catch (error) {
+    } catch {
       return { success: false, error: 'Failed to parse HackMD URL' };
     }
   };
@@ -361,7 +361,7 @@ export default function LoadPage() {
               <strong>HackMD Notes:</strong>
               <ul className="ml-4 mt-1 space-y-1">
                 <li>• Must be <strong>publicly accessible</strong> (not private)</li>
-                <li>• Set sharing to "Everyone can view" in note settings</li>
+                <li>• Set sharing to &quot;Everyone can view&quot; in note settings</li>
                 <li>• Private or restricted notes will not work</li>
               </ul>
             </div>
