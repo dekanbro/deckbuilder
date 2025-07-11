@@ -1,60 +1,127 @@
 <!-- global size=large body=medium transition=fade -->
 <!-- size=massive center bg=#1a1a1a color=#fff -->
 # Deck Builder
-Next.js Project Bootstrapped
+Markdown-Powered Presentations
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
----
-## Getting Started
+Create beautiful slide decks using markdown with special syntax for styling and layout.
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+For setup and installation instructions, visit the [GitHub repository](https://github.com/dekanbro/deckbuilder).
 ---
 <!-- transition=slide -->
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# What is Deck Builder?
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+A powerful presentation tool that transforms markdown into interactive slides with:
+
+- **Custom styling** through HTML comments
+- **Flexible layouts** with positioning options  
+- **Smooth transitions** between slides
+- **Image handling** with alignment controls
+- **Typography** with Google Fonts integration
 ---
 <!-- transition=zoom -->
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Getting Started with Syntax
+
+All slide customizations use HTML comment syntax:
+
+```markdown
+<!-- option=value option2=value2 -->
+# Your Slide Title
+Your slide content here
 ---
-<!-- transition=none -->
-## Learn More
+```
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Key concepts:**
+- Global options affect all slides
+- Slide-specific options override globals
+- Use `---` to separate slides
 ---
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Available Options Reference
+
+## Layout & Positioning
+- `center` - Center content vertically and horizontally
+- `imgpos=left|right` - Align images left or right (default: center)
+
+## Styling
+- `bg=#color` - Set background color (hex, rgb, or named colors)
+- `color=#color` - Set text color
+- `font=FontName` - Use Google Fonts (e.g., Roboto, Lora)
+- `size=large|huge|massive` - Increase heading size
+
+## Animations
+- `transition=fade|slide|zoom|none` - Set slide transition
+- Global: `<!-- global transition=fade -->` (affects all slides)
+- Per-slide: `<!-- transition=slide -->` (overrides global)
 ---
-## Deploy on Vercel
+# Basic Markdown Support
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Standard markdown elements work seamlessly:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Headings
+```markdown
+# H1 Heading
+## H2 Heading  
+### H3 Heading
+```
+
+## Text Formatting
+**Bold text**, *italic text*, and `inline code`
+
+## Lists
+- Bullet point one
+- Bullet point two
+  - Nested item
+  - Another nested item
+
+1. Numbered list
+2. Second item
+3. Third item
 ---
 ---
 # Customizing Deck Styles
 
-This deck uses a central `MarkdownRenderer` component to render markdown to HTML. You can customize the look and feel of all slides by editing the `MarkdownRenderer.module.css` file.
+## Global Options
+Set options that apply to all slides at the top of your deck:
 
-- **Fonts:** Change the `font-family` in `.deckSlideContent`.
-- **Background:** Adjust the `background` property.
-- **Text color:** Use the `color` property.
-- **Other styles:** Add or modify CSS for headings, code, etc.
+```markdown
+<!-- global size=large body=medium transition=fade -->
+```
 
-All slides will automatically use these styles, making it easy to maintain a consistent appearance.
---- 
+## Per-Slide Options  
+Override global settings for individual slides:
+
+```markdown
+<!-- center bg=#222 color=#fff -->
+# This slide has custom styling
+```
+
+## CSS Customization
+Edit `MarkdownRenderer.module.css` to customize:
+- **Fonts:** Change `font-family` in `.deckSlideContent`
+- **Colors:** Adjust `background` and `color` properties  
+- **Typography:** Style headings, code blocks, etc.
+---
+# Global vs Slide Options
+
+## How They Work Together
+
+1. **Global options** (set at top) apply to all slides
+2. **Slide options** override globals for that specific slide
+3. **CSS styles** provide the base styling foundation
+
+## Example Structure
+```markdown
+<!-- global transition=fade size=large -->
+
+<!-- center bg=#f5f5f5 -->
+# First slide (centered, custom bg)
+
+---
+# Second slide (uses global settings)
+
+---
+<!-- transition=zoom color=#red -->
+# Third slide (zoom transition, red text)
+```
 ---
 <!-- center -->
 # Centered Slide
@@ -219,3 +286,46 @@ This slide demonstrates different transition types:
 - **Slide-level**: Override per slide: `<!-- transition=slide -->`
 
 Both support the same options: `fade`, `slide`, `zoom`, `none`
+---
+# Advanced Features
+
+## Code Blocks with Syntax Highlighting
+```javascript
+function createSlide(markdown) {
+  return parseMarkdown(markdown);
+}
+```
+
+```css
+.custom-slide {
+  background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+  color: white;
+}
+```
+
+## Tables for Layout
+Perfect for organizing content in columns:
+
+| Feature | Description | Example |
+|---------|-------------|---------|
+| Center | Centers content | `<!-- center -->` |
+| Background | Custom colors | `<!-- bg=#ff0000 -->` |
+| Fonts | Google Fonts | `<!-- font=Roboto -->` |
+---
+# Tips & Best Practices
+
+## Organizing Your Deck
+1. **Start with globals** - Set consistent styling at the top
+2. **Use separators** - `---` creates clean slide breaks  
+3. **Test transitions** - Preview how slides flow together
+4. **Keep it simple** - Less is often more effective
+
+## Performance Tips
+- **Optimize images** - Use appropriate sizes and formats
+- **Limit animations** - Too many transitions can be distracting
+- **Test on devices** - Ensure readability on different screens
+
+## Resources
+- 📚 [GitHub Repository](https://github.com/dekanbro/deckbuilder) - Setup and documentation
+- 🎨 [Google Fonts](https://fonts.google.com) - Typography options
+- 🖼️ [Unsplash](https://unsplash.com) - Free stock images
