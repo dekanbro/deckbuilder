@@ -23,11 +23,13 @@ export class DeckLoader {
         return result;
       } else if (deckParam.startsWith('github:')) {
         return await this.loadFromGitHub(deckParam.slice(7));
+      } else if (deckParam.startsWith('hackmd:')) {
+        return await this.loadFromHackMD(deckParam.slice(7));
       } else {
         return {
           content: '',
           source: 'invalid',
-          error: 'Invalid deck parameter format. Use url:... or github:user/repo/path',
+          error: 'Invalid deck parameter format. Use url:..., github:user/repo/path, or hackmd:note-id',
           debug,
         };
       }
@@ -98,7 +100,13 @@ export class DeckLoader {
         });
 
         if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          if (response.status === 404) {
+            throw new Error('GitHub file not found. Please check that:\n• The repository is public\n• The file path is correct\n• The file exists in the specified branch');
+          } else if (response.status === 403) {
+            throw new Error('Access denied to GitHub repository. Please ensure:\n• The repository is public (not private)\n• The file is accessible without authentication');
+          } else {
+            throw new Error(`GitHub request failed: ${response.status} ${response.statusText}`);
+          }
         }
 
         const content = await response.text();
@@ -130,7 +138,13 @@ export class DeckLoader {
         });
 
         if (!response.ok) {
-          throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+          if (response.status === 404) {
+            throw new Error('GitHub repository or file not found via API. Please check that:\n• The repository is public\n• The file path is correct\n• The file exists in the specified branch');
+          } else if (response.status === 403) {
+            throw new Error('GitHub API access denied. Please ensure:\n• The repository is public (not private)\n• You haven\'t exceeded GitHub\'s rate limits');
+          } else {
+            throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+          }
         }
 
         const data = await response.json();
@@ -159,6 +173,93 @@ export class DeckLoader {
       }
     } catch (error) {
       throw new Error(`GitHub load failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  /**
+   * Load deck from HackMD
+   * Supports both full URLs and note IDs
+   * Examples:
+   * - hackmd:abc123def456 (note ID)
+   * - hackmd:https://hackmd.io/@user/note-id
+   * - hackmd:https://hackmd.io/abc123def456
+   */
+  private static async loadFromHackMD(hackmdParam: string): Promise<DeckLoadResult> {
+    try {
+      let noteId = '';
+      let originalUrl = '';
+
+      // Parse different HackMD URL formats
+      if (hackmdParam.startsWith('https://hackmd.io/')) {
+        originalUrl = hackmdParam;
+        // Extract note ID from various HackMD URL formats
+        const urlPatterns = [
+          /https:\/\/hackmd\.io\/(@[^\/]+\/)?([a-zA-Z0-9_-]+)/,  // @user/note or direct note
+          /https:\/\/hackmd\.io\/([a-zA-Z0-9_-]+)/,              // Direct note ID
+        ];
+        
+        for (const pattern of urlPatterns) {
+          const match = hackmdParam.match(pattern);
+          if (match) {
+            noteId = match[match.length - 1]; // Get the last capture group (note ID)
+            break;
+          }
+        }
+        
+        if (!noteId) {
+          throw new Error('Could not extract note ID from HackMD URL');
+        }
+      } else {
+        // Assume it's a direct note ID
+        noteId = hackmdParam;
+        originalUrl = `https://hackmd.io/${noteId}`;
+      }
+
+      // Validate note ID format (HackMD typically uses alphanumeric with dashes/underscores)
+      if (!/^[a-zA-Z0-9_-]+$/.test(noteId)) {
+        throw new Error('Invalid HackMD note ID format');
+      }
+
+      // Construct download URL
+      const downloadUrl = `https://hackmd.io/${noteId}/download`;
+      
+      // Fetch the markdown content
+      const response = await fetch(downloadUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'text/plain, text/markdown, */*',
+          'User-Agent': 'DeckBuilder/1.0',
+        }
+      });
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('HackMD note not found. Please check that:\n• The note ID or URL is correct\n• The note is publicly accessible (not private)\n• The note hasn\'t been deleted');
+        } else if (response.status === 403) {
+          throw new Error('HackMD note is private or access denied. Please ensure:\n• The note is set to "Everyone can view" in sharing settings\n• The note is not restricted to specific users\n• Try making the note public and retry');
+        } else {
+          throw new Error(`HackMD request failed: ${response.status} ${response.statusText}. Please ensure the note is publicly accessible.`);
+        }
+      }
+
+      const content = await response.text();
+      
+      // Check file size
+      if (content.length > this.MAX_FILE_SIZE) {
+        throw new Error(`File too large. Maximum size is ${this.MAX_FILE_SIZE / 1024}KB`);
+      }
+
+      // Basic markdown validation
+      if (!this.isValidMarkdown(content)) {
+        throw new Error('Content does not appear to be valid markdown');
+      }
+
+      return {
+        content,
+        source: `hackmd:${noteId} (${originalUrl})`
+      };
+    } catch (error) {
+      throw new Error(`HackMD load failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 

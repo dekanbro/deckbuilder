@@ -15,6 +15,9 @@ A modern, responsive presentation deck builder built with Next.js 15, React, and
 - **Custom fonts**: Support for Google Fonts integration
 - **Image positioning**: Flexible image placement and alignment options
 - **Safe URL sharing**: Share decks via encoded URLs without hosting files
+- **GitHub integration**: Load presentations directly from public GitHub repositories
+- **HackMD integration**: Load presentations directly from public HackMD documents
+- **AI-powered generation**: Generate presentations using OpenAI based on key points
 
 ## Getting Started
 
@@ -269,12 +272,31 @@ http://localhost:3000/?deck=github:username/repo/branch/path/to/file.md
 http://localhost:3000/?deck=github:dekanbro/deckbuilder/main/public/deck.md
 ```
 
-### 4. Printing & Sharing
+### 4. Load from HackMD
+
+You can load a markdown document directly from HackMD using the note ID or full URL:
+
+**Using Note ID:**
+```
+http://localhost:3000/?deck=hackmd:abc123def456
+```
+
+**Using Full HackMD URL:**
+```
+http://localhost:3000/?deck=hackmd:https://hackmd.io/@user/note-name
+http://localhost:3000/?deck=hackmd:https://hackmd.io/abc123def456
+```
+
+- The HackMD note must be **publicly accessible** (not private)
+- Works with both user notes (`@user/note-name`) and direct note IDs
+- Uses HackMD's `/download` endpoint to fetch raw markdown content
+
+### 5. Printing & Sharing
 
 - These URL parameters work for both viewing and printing (the print/export buttons will preserve the deck source).
 - You can share the full URL with others and they will see the same deck.
 
-### 5. Notes & Limitations
+### 6. Notes & Limitations
 
 - Maximum file size: 1MB
 - Only markdown files are supported

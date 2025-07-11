@@ -1,10 +1,11 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { ArrowLeft, ArrowRight, Printer, Share2, AlertCircle, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Printer, Share2, AlertCircle, Loader2, Wand2, Download } from "lucide-react";
 import MarkdownRenderer from "./MarkdownRenderer";
 import { DECK_URL } from "./constants";
 import { DeckLoader, DeckLoadResult } from "./deckLoader";
 import { parseDeckContent } from "./deckParser";
+import Link from "next/link";
 
 // Helper function to get slide number from URL
 function getSlideFromURL(): number {
@@ -167,7 +168,9 @@ export default function Home() {
             <AlertCircle className="h-6 w-6 text-red-500" />
             <h2 className="text-lg font-semibold text-gray-900">Failed to Load Deck</h2>
           </div>
-          <p className="text-gray-600 mb-4">{error}</p>
+          <div className="text-gray-700 mb-4">
+            <pre className="whitespace-pre-wrap font-sans text-sm">{error}</pre>
+          </div>
           <button
             onClick={loadDeck}
             className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
@@ -223,6 +226,18 @@ export default function Home() {
       </div>
       
       <div className="flex gap-4 flex-wrap justify-center">
+        <Link 
+          href="/generate"
+          className="flex items-center gap-2 px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
+        >
+          <Wand2 size={18} /> AI Generate Deck
+        </Link>
+        <Link 
+          href="/load"
+          className="flex items-center gap-2 px-4 py-2 rounded bg-purple-600 text-white hover:bg-purple-700"
+        >
+          <Download size={18} /> Load External Deck
+        </Link>
         <button 
           onClick={() => window.open(getPrintUrl('deck'), '_blank')}
           className="flex items-center gap-2 px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
@@ -239,7 +254,7 @@ export default function Home() {
         {shareUrl && (
           <button 
             onClick={copyShareUrl}
-            className="flex items-center gap-2 px-4 py-2 rounded bg-purple-600 text-white hover:bg-purple-700"
+            className="flex items-center gap-2 px-4 py-2 rounded bg-gray-600 text-white hover:bg-gray-700"
           >
             <Share2 size={18} /> Copy Share URL
           </button>
